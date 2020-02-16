@@ -77,11 +77,8 @@ export class User {
           firstName: chance.first(),
           lastName: chance.last(),
           pictureUrl: chance.avatar({ protocol: 'http' }),
-          bets: chance.n(chance.guid, chance.integer({ min: 0, max: 500 })),
-          challanges: chance.n(
-            chance.guid,
-            chance.integer({ min: 0, max: 30 }),
-          ),
+          bets: [],
+          challanges: [],
         }
       : {
           id: chance.guid(),
@@ -90,16 +87,19 @@ export class User {
           firstName: chance.first(),
           lastName: chance.last(),
           pictureUrl: chance.avatar({ protocol: 'http' }),
-          bets: [],
-          challanges: [],
+          bets: chance.n(chance.guid, chance.integer({ min: 0, max: 50 })),
+          challanges: chance.n(
+            chance.guid,
+            chance.integer({ min: 0, max: 30 }),
+          ),
         };
   }
-  //
-  // static getMockMany(n: number): User[] {
-  //   if (n <= 0) return [];
-  //
-  //   return new Array(n)
-  //     .fill(1)
-  //     .map(u => User.getMockOne());
-  // }
+
+  static getMockMany(n: number): User[] {
+    if (n <= 0) return [];
+
+    return new Array(n)
+      .fill(1)
+      .map(u => User.getMockOne());
+  }
 }
