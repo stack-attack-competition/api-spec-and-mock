@@ -1,25 +1,25 @@
 import { IsArray, IsString } from 'class-validator';
-import { ApiModelProperty } from '@nestjs/swagger/dist/decorators/api-model-property.decorator';
 import { Exclude } from 'class-transformer';
 import * as Chance from 'chance';
 import * as _ from 'lodash';
+import { ApiProperty } from '@nestjs/swagger';
 
 const chance = new Chance();
 
 export class User {
-  @ApiModelProperty({
+  @ApiProperty({
     example: chance.guid(),
   })
   @IsString()
   id: string;
 
-  @ApiModelProperty({
+  @ApiProperty({
     example: chance.email(),
   })
   @IsString()
   email: string;
 
-  @ApiModelProperty({
+  @ApiProperty({
     example: chance.string(),
     writeOnly: true,
   })
@@ -27,25 +27,25 @@ export class User {
   @Exclude()
   password: string;
 
-  @ApiModelProperty({
+  @ApiProperty({
     example: chance.first(),
   })
   @IsString()
   firstName: string;
 
-  @ApiModelProperty({
+  @ApiProperty({
     example: chance.last(),
   })
   @IsString()
   lastName: string;
 
-  @ApiModelProperty({
+  @ApiProperty({
     example: chance.avatar({ protocol: 'http' }),
   })
   @IsString()
   pictureUrl: string;
 
-  @ApiModelProperty({
+  @ApiProperty({
     isArray: true,
     example: chance.n(chance.guid, chance.integer({ min: 0, max: 20 })),
   })
@@ -53,7 +53,7 @@ export class User {
   @IsString({ each: true })
   bets: string[];
 
-  @ApiModelProperty({
+  @ApiProperty({
     isArray: true,
     example: chance.n(chance.guid, chance.integer({ min: 0, max: 10 })),
   })
@@ -71,28 +71,28 @@ export class User {
   static getMockOne(isNew?: boolean): User {
     return isNew
       ? {
-          id: chance.guid(),
-          email: chance.email(),
-          password: chance.string(),
-          firstName: chance.first(),
-          lastName: chance.last(),
-          pictureUrl: chance.avatar({ protocol: 'http' }),
-          bets: [],
-          challanges: [],
-        }
+        id: chance.guid(),
+        email: chance.email(),
+        password: chance.string(),
+        firstName: chance.first(),
+        lastName: chance.last(),
+        pictureUrl: chance.avatar({ protocol: 'http' }),
+        bets: [],
+        challanges: [],
+      }
       : {
-          id: chance.guid(),
-          email: chance.email(),
-          password: chance.string(),
-          firstName: chance.first(),
-          lastName: chance.last(),
-          pictureUrl: chance.avatar({ protocol: 'http' }),
-          bets: chance.n(chance.guid, chance.integer({ min: 0, max: 50 })),
-          challanges: chance.n(
-            chance.guid,
-            chance.integer({ min: 0, max: 30 }),
-          ),
-        };
+        id: chance.guid(),
+        email: chance.email(),
+        password: chance.string(),
+        firstName: chance.first(),
+        lastName: chance.last(),
+        pictureUrl: chance.avatar({ protocol: 'http' }),
+        bets: chance.n(chance.guid, chance.integer({ min: 0, max: 50 })),
+        challanges: chance.n(
+          chance.guid,
+          chance.integer({ min: 0, max: 30 }),
+        ),
+      };
   }
 
   static getMockMany(n: number): User[] {

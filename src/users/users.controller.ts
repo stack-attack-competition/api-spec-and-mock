@@ -15,15 +15,11 @@ import { ApiResponse, ApiTags } from '@nestjs/swagger';
 import { User } from './models/user';
 import { UpsertUserDto } from './dto/upsert-user.dto';
 import { PatchUserDto } from './dto/patch-user.dto';
-import * as Chance from 'chance';
-
-const chance = new Chance();
 
 @ApiTags('users')
 @Controller('users')
 export class UsersController {
-  constructor(private usersSvc: UsersService) {
-  }
+  constructor(private usersSvc: UsersService) {}
 
   @Get('')
   @ApiResponse({
@@ -32,7 +28,6 @@ export class UsersController {
     isArray: true,
   })
   getUsers() {
-    console.log(this.usersSvc.findAllUsers());
     return this.usersSvc.findAllUsers();
   }
 
