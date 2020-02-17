@@ -36,7 +36,7 @@ export class Challenge {
   @ApiProperty({
     example: chance.bool(),
   })
-  @IsString()
+  @IsBoolean()
   isActive: boolean;
 
   @ApiProperty({
@@ -71,6 +71,10 @@ export class Challenge {
     Object.assign(this, _.pickBy(challenge, _.identity));
     if (!challenge.id) this.id = chance.guid();
     if (!challenge.bets) this.bets = [];
+  }
+
+  static factory(data: Partial<Challenge>): Challenge {
+    return new Challenge(data);
   }
 
   static getMockOne(

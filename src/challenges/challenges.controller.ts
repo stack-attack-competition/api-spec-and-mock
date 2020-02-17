@@ -49,7 +49,7 @@ export class ChallengesController {
 
   @Post()
   @ApiResponse({
-    status: 200,
+    status: 201,
     type: Challenge,
   })
   @ApiResponse({

@@ -29,7 +29,7 @@ export class UpsertChallengeDto {
   @ApiProperty({
     example: chance.bool(),
   })
-  @IsString()
+  @IsBoolean()
   isActive: boolean;
 
   @ApiProperty({

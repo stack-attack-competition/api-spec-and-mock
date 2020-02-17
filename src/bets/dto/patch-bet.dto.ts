@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNumber, IsOptional, IsString } from 'class-validator';
+import { IsBoolean, IsNumber, IsOptional, IsString } from 'class-validator';
 import * as Chance from 'chance';
 
 const chance = new Chance();
@@ -22,7 +22,7 @@ export class PatchBetDto {
   @ApiProperty({
     example: chance.bool(),
   })
-  @IsString()
+  @IsBoolean()
   @IsOptional()
   inFavor?: boolean;
 

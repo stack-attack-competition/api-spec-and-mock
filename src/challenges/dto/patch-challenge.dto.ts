@@ -32,7 +32,7 @@ export class PatchChallengeDto {
   @ApiProperty({
     example: chance.bool(),
   })
-  @IsString()
+  @IsBoolean()
   @IsOptional()
   isActive?: boolean;
 

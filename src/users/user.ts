@@ -68,6 +68,10 @@ export class User {
     if (!user.challenges) this.challenges = [];
   }
 
+  static factory(data: Partial<User>): User {
+    return new User(data);
+  }
+
   static getMockOne(isNew?: boolean): User {
     return {
       id: chance.guid(),

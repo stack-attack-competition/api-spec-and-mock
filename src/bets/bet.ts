@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNumber, IsOptional, IsString } from 'class-validator';
+import { IsBoolean, IsNumber, IsOptional, IsString } from 'class-validator';
 import * as Chance from 'chance';
 import * as _ from 'lodash';
 
@@ -27,7 +27,7 @@ export class Bet {
   @ApiProperty({
     example: chance.bool(),
   })
-  @IsString()
+  @IsBoolean()
   inFavor: boolean;
 
   @ApiProperty({
@@ -46,6 +46,10 @@ export class Bet {
   constructor(bet: Partial<Bet>) {
     Object.assign(this, _.pickBy(bet, _.identity));
     if (!bet.id) this.id = chance.guid();
+  }
+
+  static factory(data: Partial<Bet>): Bet {
+    return new Bet(data);
   }
 
   static getMockOne(
