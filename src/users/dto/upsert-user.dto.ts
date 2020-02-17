@@ -1,43 +1,38 @@
 import { IsString } from 'class-validator';
-import {
-  ApiModelProperty,
-  ApiModelPropertyOptional,
-} from '@nestjs/swagger/dist/decorators/api-model-property.decorator';
 import * as Chance from 'chance';
+import { ApiProperty } from '@nestjs/swagger';
 
 const chance = new Chance();
 
 export class UpsertUserDto {
 
-  @ApiModelPropertyOptional({
+  @ApiProperty({
     example: chance.email(),
   })
   @IsString()
   email: string;
 
-  @ApiModelProperty({
+  @ApiProperty({
     example: chance.string(),
   })
   @IsString()
   password: string;
 
-  @ApiModelProperty({
+  @ApiProperty({
     example: chance.first(),
   })
   @IsString()
   firstName: string;
 
-  @ApiModelProperty({
+  @ApiProperty({
     example: chance.last(),
   })
   @IsString()
   lastName: string;
 
-  @ApiModelProperty({
+  @ApiProperty({
     example: chance.avatar({ protocol: 'http' }),
   })
   @IsString()
   pictureUrl: string;
-
-
 }

@@ -59,47 +59,35 @@ export class User {
   })
   @IsArray()
   @IsString({ each: true })
-  challanges: string[];
+  challenges: string[];
 
   constructor(user: Partial<User>) {
     Object.assign(this, _.pickBy(user, _.identity));
     if (!user.id) this.id = chance.guid();
     if (!user.bets) this.bets = [];
-    if (!user.challanges) this.challanges = [];
+    if (!user.challenges) this.challenges = [];
   }
 
   static getMockOne(isNew?: boolean): User {
-    return isNew
-      ? {
-        id: chance.guid(),
-        email: chance.email(),
-        password: chance.string(),
-        firstName: chance.first(),
-        lastName: chance.last(),
-        pictureUrl: chance.avatar({ protocol: 'http' }),
-        bets: [],
-        challanges: [],
-      }
-      : {
-        id: chance.guid(),
-        email: chance.email(),
-        password: chance.string(),
-        firstName: chance.first(),
-        lastName: chance.last(),
-        pictureUrl: chance.avatar({ protocol: 'http' }),
-        bets: chance.n(chance.guid, chance.integer({ min: 0, max: 50 })),
-        challanges: chance.n(
-          chance.guid,
-          chance.integer({ min: 0, max: 30 }),
-        ),
-      };
+    return {
+      id: chance.guid(),
+      email: chance.email(),
+      password: chance.string(),
+      firstName: chance.first(),
+      lastName: chance.last(),
+      pictureUrl: chance.avatar({ protocol: 'http' }),
+      bets: isNew
+        ? []
+        : chance.n(chance.guid, chance.integer({ min: 0, max: 50 })),
+      challenges: isNew
+        ? []
+        : chance.n(chance.guid, chance.integer({ min: 0, max: 30 })),
+    };
   }
 
   static getMockMany(n: number): User[] {
     if (n <= 0) return [];
 
-    return new Array(n)
-      .fill(1)
-      .map(u => User.getMockOne());
+    return new Array(n).fill(1).map(d => User.getMockOne());
   }
 }

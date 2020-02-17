@@ -12,7 +12,7 @@ import {
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { ApiResponse, ApiTags } from '@nestjs/swagger';
-import { User } from './models/user';
+import { User } from './user';
 import { UpsertUserDto } from './dto/upsert-user.dto';
 import { PatchUserDto } from './dto/patch-user.dto';
 
@@ -27,8 +27,8 @@ export class UsersController {
     type: User,
     isArray: true,
   })
-  getUsers() {
-    return this.usersSvc.findAllUsers();
+  getAll() {
+    return this.usersSvc.findAll();
   }
 
   @Get(':uuid')
@@ -40,8 +40,8 @@ export class UsersController {
     status: 404,
     description: 'User does not exist!',
   })
-  getUserByUuid(@Param('uuid', new ParseUUIDPipe()) userId: string) {
-    const user = this.usersSvc.findUserById(userId);
+  getById(@Param('uuid', new ParseUUIDPipe()) userId: string) {
+    const user = this.usersSvc.findById(userId);
     if (!user) throw new NotFoundException('User does not exist!');
     return user;
   }
@@ -59,8 +59,8 @@ export class UsersController {
     status: 409,
     description: 'Email address is taken!',
   })
-  createUser(@Body() user: UpsertUserDto) {
-    return this.usersSvc.upsertUser(user);
+  create(@Body() user: UpsertUserDto) {
+    return this.usersSvc.upsert(user);
   }
 
   @Put(':uuid')
@@ -80,11 +80,11 @@ export class UsersController {
     status: 409,
     description: 'Email address is taken!',
   })
-  updateUser(
+  update(
     @Param('uuid', new ParseUUIDPipe()) userId: string,
     @Body() user: UpsertUserDto,
   ) {
-    return this.usersSvc.upsertUser(user, userId);
+    return this.usersSvc.upsert(user, userId);
   }
 
   @Patch(':uuid')
@@ -104,11 +104,11 @@ export class UsersController {
     status: 409,
     description: 'Email address is taken!',
   })
-  partialUpdateUser(
+  partialUpdate(
     @Param('uuid', new ParseUUIDPipe()) userId: string,
     @Body() user: PatchUserDto,
   ) {
-    return this.usersSvc.upsertUser(user, userId);
+    return this.usersSvc.upsert(user, userId);
   }
 
   @Delete(':uuid')
@@ -120,7 +120,7 @@ export class UsersController {
     status: 404,
     description: 'The user can not be found!',
   })
-  deleteUser(@Param('uuid', new ParseUUIDPipe()) userId: string) {
-    return this.usersSvc.removeUser(userId);
+  remove(@Param('uuid', new ParseUUIDPipe()) userId: string) {
+    return this.usersSvc.remove(userId);
   }
 }
