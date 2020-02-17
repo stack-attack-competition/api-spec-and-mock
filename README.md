@@ -20,6 +20,7 @@ $ npm run start:dev
 ```
 
 the api swagger spec will be on the http://localhost:3000/api
+in json format the spec can be found on: http://localhost:3000/api-json
 
 ## Test
 
