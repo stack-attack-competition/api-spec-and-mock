@@ -84,7 +84,7 @@ export class EntityService<E extends { id: string }, C, U> {
     return relatedUuid;
   }
 
-  create(data: C) {
+  create(data: C): E {
     const newRecord = this.entity.factory(data);
     this.dataStore.push(newRecord);
     return newRecord;

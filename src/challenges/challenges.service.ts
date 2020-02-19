@@ -23,44 +23,43 @@ export class ChallengesService extends EntityService<
     super('ChallengeService', Challenge);
   }
 
-  update(
-    data: CreateChallengeDto | UpdateChallengeDto,
-    uuid?: string,
-  ): Challenge {
-    if (!uuid) {
-      const updatedChallenge = super.update(data);
+  create(data: CreateChallengeDto) {
+    const author = this.userSvc.findById(data.author);
+    if (!author)
+      throw new BadRequestException('Original author does not exist!');
 
-      const author = this.userSvc.findById(updatedChallenge.author);
-      if (!author)
-        throw new BadRequestException('Original author does not exist!');
+    const newChallenge = super.create(data);
 
+    this.userSvc.addRelatedUuid(
+      newChallenge.author,
+      'challenges',
+      newChallenge.id,
+    );
+
+    return newChallenge;
+  }
+
+  update(data: UpdateChallengeDto, uuid: string): Challenge {
+    const originalChallenge = this.findById(uuid);
+    if (!originalChallenge)
+      throw new NotFoundException('The existing challenge was not found!');
+
+    const updatedChallenge = super.update(data, uuid);
+
+    if (updatedChallenge.author !== originalChallenge.author) {
       this.userSvc.addRelatedUuid(
         updatedChallenge.author,
         'challenges',
         updatedChallenge.id,
       );
 
-      return updatedChallenge;
-    } else {
-      const originalChallenge = this.findById(uuid);
-      if (!originalChallenge)
-        throw new NotFoundException('The existing challenge was not found!');
-
-      const updatedChallenge = super.update(data, uuid);
-
-      if (updatedChallenge.author !== originalChallenge.author) {
-        this.userSvc.addRelatedUuid(
-          updatedChallenge.author,
-          'challenges',
-          updatedChallenge.id,
-        );
-
-        this.userSvc.removeRelatedUuid(
-          originalChallenge.author,
-          'challenges',
-          originalChallenge.id,
-        );
-      }
+      this.userSvc.removeRelatedUuid(
+        originalChallenge.author,
+        'challenges',
+        originalChallenge.id,
+      );
     }
+
+    return updatedChallenge;
   }
 }
