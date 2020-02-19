@@ -8,19 +8,17 @@ import {
   ParseUUIDPipe,
   Patch,
   Post,
-  Put,
 } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { ChallengesService } from './challenges.service';
 import { Challenge } from './challenge';
-import { UpsertChallengeDto } from './dto/upsert-challenge.dto';
-import { PatchChallengeDto } from './dto/patch-challenge.dto';
+import { CreateChallengeDto } from './dto/create-challenge.dto';
+import { UpdateChallengeDto } from './dto/update-challenge.dto';
 
 @ApiTags('challenges')
 @Controller('challenges')
 export class ChallengesController {
-  constructor(private challengeSvc: ChallengesService) {
-  }
+  constructor(private challengeSvc: ChallengesService) {}
 
   @Get('')
   @ApiResponse({
@@ -56,29 +54,15 @@ export class ChallengesController {
     status: 400,
     description: 'Bad request, payload problem',
   })
-  create(@Body() challenge: UpsertChallengeDto) {
-    return this.challengeSvc.upsert(challenge);
-  }
-
-  @Put(':uuid')
-  @ApiOperation({ summary: 'Whole object replace'})
-  @ApiResponse({
-    status: 200,
-    type: Challenge,
-  })
-  @ApiResponse({
-    status: 400,
-    description: 'Bad request, payload problem!',
-  })
-  update(
-    @Param('uuid', new ParseUUIDPipe()) challengeId: string,
-    @Body() challenge: UpsertChallengeDto,
-  ) {
-    return this.challengeSvc.upsert(challenge, challengeId);
+  create(@Body() challenge: CreateChallengeDto) {
+    return this.challengeSvc.create(challenge);
   }
 
   @Patch(':uuid')
-  @ApiOperation({ summary: 'Partial update, only the sent keys that exist on the model will be used'})
+  @ApiOperation({
+    summary:
+      'Partial update, only the sent keys that exist on the model will be used',
+  })
   @ApiResponse({
     status: 200,
     type: Challenge,
@@ -89,9 +73,9 @@ export class ChallengesController {
   })
   partialUpdate(
     @Param('uuid', new ParseUUIDPipe()) challengeId: string,
-    @Body() challenge: PatchChallengeDto,
+    @Body() challenge: UpdateChallengeDto,
   ) {
-    return this.challengeSvc.upsert(challenge, challengeId);
+    return this.challengeSvc.update(challenge, challengeId);
   }
 
   @Delete(':uuid')

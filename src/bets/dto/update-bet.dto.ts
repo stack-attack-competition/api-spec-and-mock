@@ -1,24 +1,10 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsBoolean, IsNumber, IsOptional, IsString } from 'class-validator';
+import { IsBoolean, IsNumber, IsOptional } from 'class-validator';
 import * as Chance from 'chance';
 
 const chance = new Chance();
 
-export class PatchBetDto {
-  @ApiProperty({
-    example: chance.guid(),
-  })
-  @IsString()
-  @IsOptional()
-  author?: string;
-
-  @ApiProperty({
-    example: chance.guid(),
-  })
-  @IsString()
-  @IsOptional()
-  challenge?: string;
-
+export class UpdateBetDto {
   @ApiProperty({
     example: chance.bool(),
   })

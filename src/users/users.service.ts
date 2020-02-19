@@ -1,18 +1,18 @@
 import { ConflictException, Injectable } from '@nestjs/common';
 import { User } from './user';
-import { UpsertUserDto } from './dto/upsert-user.dto';
-import { PatchUserDto } from './dto/patch-user.dto';
+import { CreateUserDto } from './dto/create-user.dto';
+import { UpdateUserDto } from './dto/update-user.dto';
 import { EntityService } from '../common/entity.service';
 
 @Injectable()
 export class UsersService extends EntityService<User,
-  UpsertUserDto,
-  PatchUserDto> {
+  CreateUserDto,
+  UpdateUserDto> {
   constructor() {
     super('UserService', User);
   }
 
-  upsert(data: UpsertUserDto | PatchUserDto, uuid?: string) {
+  update(data: CreateUserDto | UpdateUserDto, uuid?: string) {
     const emailCheck = this.filterBy('email', data.email);
 
     if (
@@ -23,6 +23,6 @@ export class UsersService extends EntityService<User,
         'This email address is already being used. Email addresses must be unique!',
       );
 
-    return super.upsert(data, uuid);
+    return super.update(data, uuid);
   }
 }

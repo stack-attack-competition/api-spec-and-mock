@@ -6,7 +6,7 @@ import {
 import * as Chance from 'chance';
 const chance = new Chance();
 
-export class PatchUserDto {
+export class UpdateUserDto {
 
   @ApiModelPropertyOptional({
     example: chance.email(),

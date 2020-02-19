@@ -7,7 +7,7 @@ import {
 } from '@nestjs/common';
 
 @Injectable()
-export class EntityService<E extends { id: string }, U, P> {
+export class EntityService<E extends { id: string }, C, U> {
   private dataStore: E[] = [];
 
   constructor(private name: string, private entity: any) {}
@@ -57,29 +57,52 @@ export class EntityService<E extends { id: string }, U, P> {
     return relatedUuid;
   }
 
-  upsert(data: U | P, uuid?: string): E {
-    if (!uuid) {
-      // create
+  removeRelatedUuid(entityUuid: string, key: keyof E, relatedUuid: string) {
+    const existingEntity = this.findById(entityUuid);
+    if (!existingEntity)
+      throw new NotFoundException(
+        `The specified data with uuid: ${entityUuid} does not exist in the ${this.name}`,
+      );
 
-      const newRecord = this.entity.factory(data);
-      this.dataStore.push(newRecord);
-      return newRecord;
-    } else {
-      // update
+    if (!existingEntity[key])
+      throw new BadRequestException(
+        `The specified ${key} with uuid: ${entityUuid} does not exist in the ${this.name}`,
+      );
 
-      const existingRecordIndex = this.findIndexById(uuid);
-
-      if (!existingRecordIndex)
-        throw new NotFoundException('Existing record is not found!');
-
-      const updatedRecord = this.entity.factory({
-        ...this.findById(uuid),
-        ...data,
-      });
-
-      this.dataStore[existingRecordIndex] = updatedRecord;
-      return updatedRecord;
+    const entityProp = existingEntity[key];
+    if (!Array.isArray(entityProp)) {
+      throw new BadRequestException(
+        `The specified ${key} with uuid: ${entityUuid} is not a relation type (array) on ${this.name}`,
+      );
     }
+
+    if (entityProp.some(u => u === relatedUuid)) {
+      // @ts-ignore
+      existingEntity[key] = entityProp.filter(u => u !== relatedUuid);
+    }
+
+    return relatedUuid;
+  }
+
+  create(data: C) {
+    const newRecord = this.entity.factory(data);
+    this.dataStore.push(newRecord);
+    return newRecord;
+  }
+
+  update(data: U, uuid: string): E {
+    const existingRecordIndex = this.findIndexById(uuid);
+
+    if (!existingRecordIndex)
+      throw new NotFoundException('Existing record is not found!');
+
+    const updatedRecord = this.entity.factory({
+      ...this.findById(uuid),
+      ...data,
+    });
+
+    this.dataStore[existingRecordIndex] = updatedRecord;
+    return updatedRecord;
   }
 
   remove(uuid: string): E {

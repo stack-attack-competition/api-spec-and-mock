@@ -1,8 +1,8 @@
-import { Body, Controller, Header, Post, Res, UnauthorizedException } from '@nestjs/common';
+import { Body, Controller, Post, UnauthorizedException } from '@nestjs/common';
 import { ApiResponse, ApiTags } from '@nestjs/swagger';
 import { UsersService } from '../users/users.service';
 import { User } from '../users/user';
-import { UpsertUserDto } from '../users/dto/upsert-user.dto';
+import { CreateUserDto } from '../users/dto/create-user.dto';
 import { LoginDto } from './dto/login.dto';
 
 @ApiTags('auth')
@@ -14,7 +14,8 @@ export class AuthController {
   login(@Body() loginDto: LoginDto) {
     const user = this.usersSvc.findBy('email', loginDto.email);
 
-    if(!user || user.password !== loginDto.password) throw new UnauthorizedException()
+    if (!user || user.password !== loginDto.password)
+      throw new UnauthorizedException();
 
     return user;
   }
@@ -32,7 +33,7 @@ export class AuthController {
     status: 409,
     description: 'Email address is taken!',
   })
-  register(@Body() user: UpsertUserDto) {
-    return this.usersSvc.upsert(user);
+  register(@Body() user: CreateUserDto) {
+    return this.usersSvc.update(user);
   }
 }

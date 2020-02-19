@@ -8,13 +8,12 @@ import {
   ParseUUIDPipe,
   Patch,
   Post,
-  Put,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { User } from './user';
-import { UpsertUserDto } from './dto/upsert-user.dto';
-import { PatchUserDto } from './dto/patch-user.dto';
+import { CreateUserDto } from './dto/create-user.dto';
+import { UpdateUserDto } from './dto/update-user.dto';
 
 @ApiTags('users')
 @Controller('users')
@@ -59,37 +58,15 @@ export class UsersController {
     status: 409,
     description: 'Email address is taken!',
   })
-  create(@Body() user: UpsertUserDto) {
-    return this.usersSvc.upsert(user);
-  }
-
-  @Put(':uuid')
-  @ApiOperation({ summary: 'Whole object replace'})
-  @ApiResponse({
-    status: 200,
-    type: User,
-  })
-  @ApiResponse({
-    status: 400,
-    description: 'Bad request, payload problem!',
-  })
-  @ApiResponse({
-    status: 404,
-    description: 'The user can not be found!',
-  })
-  @ApiResponse({
-    status: 409,
-    description: 'Email address is taken!',
-  })
-  update(
-    @Param('uuid', new ParseUUIDPipe()) userId: string,
-    @Body() user: UpsertUserDto,
-  ) {
-    return this.usersSvc.upsert(user, userId);
+  create(@Body() user: CreateUserDto) {
+    return this.usersSvc.create(user);
   }
 
   @Patch(':uuid')
-  @ApiOperation({ summary: 'Partial update, only the sent keys that exist on the model will be used'})
+  @ApiOperation({
+    summary:
+      'Partial update, only the sent keys that exist on the model will be used',
+  })
   @ApiResponse({
     status: 200,
     type: User,
@@ -108,9 +85,9 @@ export class UsersController {
   })
   partialUpdate(
     @Param('uuid', new ParseUUIDPipe()) userId: string,
-    @Body() user: PatchUserDto,
+    @Body() user: UpdateUserDto,
   ) {
-    return this.usersSvc.upsert(user, userId);
+    return this.usersSvc.update(user, userId);
   }
 
   @Delete(':uuid')

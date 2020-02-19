@@ -4,7 +4,7 @@ import { ApiProperty } from '@nestjs/swagger';
 
 const chance = new Chance();
 
-export class UpsertUserDto {
+export class CreateUserDto {
 
   @ApiProperty({
     example: chance.email(),

@@ -4,7 +4,7 @@ import { ApiProperty } from '@nestjs/swagger';
 
 const chance = new Chance();
 
-export class PatchChallengeDto {
+export class UpdateChallengeDto {
   @ApiProperty({
     example: chance.guid(),
   })

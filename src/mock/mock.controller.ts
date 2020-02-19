@@ -16,11 +16,11 @@ export class MockController {
   @Get('db')
   getMockDb(@Query() getDbDto: GetDbDto) {
     const userSvc = new UsersService();
-    const challengeSvc = new ChallengesService();
+    const challengeSvc = new ChallengesService(userSvc);
 
     const users = chance
       .n(() => User.getMockOne(true), +getDbDto.userCount)
-      .map(u => userSvc.upsert(u));
+      .map(u => userSvc.create(u));
     const userIds = users.map(u => u.id);
 
     const challenges = Challenge.getMockMany(+getDbDto.challengeCount)
@@ -32,7 +32,7 @@ export class MockController {
         userSvc.addRelatedUuid(randomUserId, 'challenges', c.id);
         return c;
       })
-      .map(c => challengeSvc.upsert(c));
+      .map(c => challengeSvc.create(c));
     const challengeIds = challenges.map(c => c.id);
 
     const bets = Bet.getMockMany(+getDbDto.betCount).map(b => {

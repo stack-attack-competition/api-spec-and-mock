@@ -4,7 +4,7 @@ import * as Chance from 'chance';
 
 const chance = new Chance();
 
-export class UpsertBetDto {
+export class CreateBetDto {
   @ApiProperty({
     example: chance.guid(),
   })
