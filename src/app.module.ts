@@ -8,18 +8,20 @@ import { BetsModule } from './bets/bets.module';
 import { GraphQLModule } from '@nestjs/graphql';
 import { PurgeModule } from './purge/purge.module';
 import { ImportExportModule } from './import-export/import-export.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
+    AuthModule,
     UsersModule,
     ChallengesModule,
     BetsModule,
-    MockModule,
     GraphQLModule.forRoot({
       autoSchemaFile: 'schema.gql',
     }),
-    PurgeModule,
     ImportExportModule,
+    MockModule,
+    PurgeModule,
   ],
   controllers: [AppController],
   providers: [AppService],
