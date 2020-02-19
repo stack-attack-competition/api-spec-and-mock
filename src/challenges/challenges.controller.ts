@@ -10,7 +10,7 @@ import {
   Post,
   Put,
 } from '@nestjs/common';
-import { ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { ChallengesService } from './challenges.service';
 import { Challenge } from './challenge';
 import { UpsertChallengeDto } from './dto/upsert-challenge.dto';
@@ -61,6 +61,7 @@ export class ChallengesController {
   }
 
   @Put(':uuid')
+  @ApiOperation({ summary: 'Whole object replace'})
   @ApiResponse({
     status: 200,
     type: Challenge,
@@ -77,6 +78,7 @@ export class ChallengesController {
   }
 
   @Patch(':uuid')
+  @ApiOperation({ summary: 'Partial update, only the sent keys that exist on the model will be used'})
   @ApiResponse({
     status: 200,
     type: Challenge,

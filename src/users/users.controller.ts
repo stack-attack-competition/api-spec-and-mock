@@ -11,7 +11,7 @@ import {
   Put,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
-import { ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { User } from './user';
 import { UpsertUserDto } from './dto/upsert-user.dto';
 import { PatchUserDto } from './dto/patch-user.dto';
@@ -64,6 +64,7 @@ export class UsersController {
   }
 
   @Put(':uuid')
+  @ApiOperation({ summary: 'Whole object replace'})
   @ApiResponse({
     status: 200,
     type: User,
@@ -88,6 +89,7 @@ export class UsersController {
   }
 
   @Patch(':uuid')
+  @ApiOperation({ summary: 'Partial update, only the sent keys that exist on the model will be used'})
   @ApiResponse({
     status: 200,
     type: User,
