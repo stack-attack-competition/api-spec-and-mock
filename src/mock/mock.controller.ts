@@ -1,16 +1,61 @@
-import { Controller, Get } from '@nestjs/common';
+import { Controller, Get, Query } from '@nestjs/common';
 import { ApiResponse, ApiTags } from '@nestjs/swagger';
 import { User } from '../users/user';
 import * as Chance from 'chance';
 import { Challenge } from '../challenges/challenge';
 import { Bet } from '../bets/bet';
+import { UsersService } from '../users/users.service';
+import { ChallengesService } from '../challenges/challenges.service';
+import { GetDbDto } from './dto/get-db.dto';
+
 const chance = new Chance();
 
 @ApiTags('__UTIL__ mock')
 @Controller('mock')
 export class MockController {
-  // @Get('db')
-  // getDb() {}
+  @Get('db')
+  getMockDb(@Query() getDbDto: GetDbDto) {
+    const userSvc = new UsersService();
+    const challengeSvc = new ChallengesService();
+
+    const users = chance
+      .n(() => User.getMockOne(true), +getDbDto.userCount)
+      .map(u => userSvc.upsert(u));
+    const userIds = users.map(u => u.id);
+
+    const challenges = Challenge.getMockMany(+getDbDto.challengeCount)
+      .map(c => {
+        const randomUserId =
+          userIds[chance.integer({ min: 0, max: userIds.length - 1 })];
+        c.author = randomUserId;
+        c.bets = [];
+        userSvc.addRelatedUuid(randomUserId, 'challenges', c.id);
+        return c;
+      })
+      .map(c => challengeSvc.upsert(c));
+    const challengeIds = challenges.map(c => c.id);
+
+    const bets = Bet.getMockMany(+getDbDto.betCount).map(b => {
+      const randomUserId =
+        userIds[chance.integer({ min: 0, max: userIds.length - 1 })];
+      const randomChallengeId =
+        challengeIds[chance.integer({ min: 0, max: challengeIds.length - 1 })];
+
+      b.author = randomUserId;
+      userSvc.addRelatedUuid(randomUserId, 'bets', b.id);
+
+      b.challenge = randomChallengeId;
+      challengeSvc.addRelatedUuid(randomChallengeId, 'bets', b.id);
+
+      return b;
+    });
+
+    return {
+      users,
+      challenges,
+      bets,
+    };
+  }
 
   @Get('users')
   @ApiResponse({
@@ -18,7 +63,7 @@ export class MockController {
     type: User,
     isArray: true,
   })
-  getUsers() {
+  getMockUsers() {
     return User.getMockMany(chance.integer({ min: 3, max: 150 }));
   }
 
@@ -27,7 +72,7 @@ export class MockController {
     status: 200,
     type: User,
   })
-  getNewUser() {
+  getMockNewUser() {
     return User.getMockOne(true);
   }
 
@@ -46,7 +91,7 @@ export class MockController {
     type: Challenge,
     isArray: true,
   })
-  getChallenges() {
+  getMockChallenges() {
     return Challenge.getMockMany(chance.integer({ min: 3, max: 150 }));
   }
 
@@ -55,7 +100,7 @@ export class MockController {
     status: 200,
     type: Challenge,
   })
-  getActiveChallenge() {
+  getMockActiveChallenge() {
     return Challenge.getMockOne(true);
   }
 
@@ -73,7 +118,7 @@ export class MockController {
     status: 200,
     type: Challenge,
   })
-  getBets() {
+  getMockBets() {
     return Bet.getMockMany(chance.integer({ min: 3, max: 150 }));
   }
 
@@ -82,15 +127,16 @@ export class MockController {
     status: 200,
     type: Bet,
   })
-  getActiveBet() {
+  getMockActiveBet() {
     return Bet.getMockOne(true);
   }
+
   @Get('closed-bet')
   @ApiResponse({
     status: 200,
     type: Bet,
   })
-  getClosedBet() {
+  getMockClosedBet() {
     return Bet.getMockOne(false);
   }
 }

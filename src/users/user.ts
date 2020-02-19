@@ -80,26 +80,33 @@ export class User {
     return new User(data);
   }
 
-  static getMockOne(isNew?: boolean): User {
-    return {
+  static getMockOne(isNew: boolean = chance.bool()): User {
+    const newUser = {
       id: chance.guid(),
       email: chance.email(),
       password: chance.string(),
       firstName: chance.first(),
       lastName: chance.last(),
       pictureUrl: chance.avatar({ protocol: 'http' }),
-      bets: isNew
-        ? []
-        : chance.n(chance.guid, chance.integer({ min: 0, max: 50 })),
-      challenges: isNew
-        ? []
-        : chance.n(chance.guid, chance.integer({ min: 0, max: 30 })),
+      bets: [],
+      challenges: [],
     };
+
+    return isNew
+      ? newUser
+      : {
+          ...newUser,
+          bets: chance.n(chance.guid, chance.integer({ min: 0, max: 50 })),
+          challenges: chance.n(
+            chance.guid,
+            chance.integer({ min: 0, max: 30 }),
+          ),
+        };
   }
 
   static getMockMany(n: number): User[] {
     if (n <= 0) return [];
 
-    return new Array(n).fill(1).map(d => User.getMockOne());
+    return chance.n(User.getMockOne, n);
   }
 }

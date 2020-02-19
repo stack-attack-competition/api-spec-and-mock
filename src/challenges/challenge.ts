@@ -107,6 +107,6 @@ export class Challenge {
   static getMockMany(n: number): Challenge[] {
     if (n <= 0) return [];
 
-    return new Array(n).fill(1).map(d => Challenge.getMockOne());
+    return chance.n(Challenge.getMockOne, n);
   }
 }

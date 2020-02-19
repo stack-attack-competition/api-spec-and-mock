@@ -4,6 +4,7 @@ import { BetsService } from './bets.service';
 
 @Module({
   controllers: [BetsController],
-  providers: [BetsService]
+  providers: [BetsService],
+  exports: [BetsService]
 })
 export class BetsModule {}

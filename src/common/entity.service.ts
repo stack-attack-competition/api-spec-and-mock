@@ -1,6 +1,10 @@
 // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
 // @ts-ignore
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 
 @Injectable()
 export class EntityService<E extends { id: string }, U, P> {
@@ -16,7 +20,7 @@ export class EntityService<E extends { id: string }, U, P> {
     return this.dataStore.find(d => d[key] === value);
   }
 
-  filterBy(key: string, value: any): E[]  {
+  filterBy(key: string, value: any): E[] {
     return this.dataStore.filter(d => d[key] === value);
   }
 
@@ -27,6 +31,30 @@ export class EntityService<E extends { id: string }, U, P> {
   findIndexById(uuid: string): number | undefined {
     const index = this.dataStore.findIndex(d => d.id === uuid);
     return index === -1 ? undefined : index;
+  }
+
+  addRelatedUuid(entityUuid: string, key: keyof E, relatedUuid: string) {
+    const existingEntity = this.findById(entityUuid);
+    if (!existingEntity)
+      throw new NotFoundException(
+        `The specified data with uuid: ${entityUuid} does not exist in the ${this.name}`,
+      );
+
+    if (!existingEntity[key])
+      throw new BadRequestException(
+        `The specified ${key} with uuid: ${entityUuid} does not exist in the ${this.name}`,
+      );
+
+    const entityProp = existingEntity[key];
+    if (!Array.isArray(entityProp)) {
+      throw new BadRequestException(
+        `The specified ${key} with uuid: ${entityUuid} is not a relation type (array) on ${this.name}`,
+      );
+    }
+
+    if (!entityProp.some(u => u === relatedUuid)) entityProp.push(relatedUuid);
+
+    return relatedUuid;
   }
 
   upsert(data: U | P, uuid?: string): E {

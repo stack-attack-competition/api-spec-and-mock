@@ -77,6 +77,6 @@ export class Bet {
   static getMockMany(n: number): Bet[] {
     if (n <= 0) return [];
 
-    return new Array(n).fill(1).map(d => Bet.getMockOne());
+    return chance.n(Bet.getMockOne, n);
   }
 }
