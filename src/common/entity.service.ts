@@ -91,4 +91,9 @@ export class EntityService<E extends { id: string }, U, P> {
 
     return deletedRecord[0];
   }
+
+  removeAll() {
+    this.dataStore = [];
+    return true;
+  }
 }

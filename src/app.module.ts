@@ -6,6 +6,7 @@ import { MockModule } from './mock/mock.module';
 import { ChallengesModule } from './challenges/challenges.module';
 import { BetsModule } from './bets/bets.module';
 import { GraphQLModule } from '@nestjs/graphql';
+import { PurgeModule } from './purge/purge.module';
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { GraphQLModule } from '@nestjs/graphql';
     GraphQLModule.forRoot({
       autoSchemaFile: 'schema.gql',
     }),
+    PurgeModule,
   ],
   controllers: [AppController],
   providers: [AppService],
