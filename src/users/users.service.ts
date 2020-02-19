@@ -16,8 +16,8 @@ export class UsersService extends EntityService<User,
     const emailCheck = this.filterBy('email', data.email);
 
     if (
-      (!data.email && emailCheck.length >= 1) || // on user create there should not be the same email in the db
-      (data.email && emailCheck.length !== 1) // on user update there should be one and only one email in the db
+      (!uuid && emailCheck.length >= 1) || // on user create there should not be the same email in the db
+      (uuid && emailCheck.length !== 1) // on user update there should be one and only one email in the db
     )
       throw new ConflictException(
         'This email address is already being used. Email addresses must be unique!',

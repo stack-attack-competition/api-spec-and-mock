@@ -3,20 +3,24 @@ import { Exclude } from 'class-transformer';
 import * as Chance from 'chance';
 import * as _ from 'lodash';
 import { ApiProperty } from '@nestjs/swagger';
+import { Field, ObjectType } from 'type-graphql';
 
 const chance = new Chance();
 
+@ObjectType()
 export class User {
   @ApiProperty({
     example: chance.guid(),
   })
   @IsString()
+  @Field()
   id: string;
 
   @ApiProperty({
     example: chance.email(),
   })
   @IsString()
+  @Field()
   email: string;
 
   @ApiProperty({
@@ -25,24 +29,28 @@ export class User {
   })
   @IsString()
   @Exclude()
+  @Field()
   password: string;
 
   @ApiProperty({
     example: chance.first(),
   })
   @IsString()
+  @Field()
   firstName: string;
 
   @ApiProperty({
     example: chance.last(),
   })
   @IsString()
+  @Field()
   lastName: string;
 
   @ApiProperty({
     example: chance.avatar({ protocol: 'http' }),
   })
   @IsString()
+  @Field()
   pictureUrl: string;
 
   @ApiProperty({
