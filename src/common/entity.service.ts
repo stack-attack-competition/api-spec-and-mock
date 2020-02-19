@@ -96,4 +96,8 @@ export class EntityService<E extends { id: string }, U, P> {
     this.dataStore = [];
     return true;
   }
+
+  loadData(data: E[]) {
+    this.dataStore = data;
+  }
 }

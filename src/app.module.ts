@@ -7,6 +7,7 @@ import { ChallengesModule } from './challenges/challenges.module';
 import { BetsModule } from './bets/bets.module';
 import { GraphQLModule } from '@nestjs/graphql';
 import { PurgeModule } from './purge/purge.module';
+import { ImportExportModule } from './import-export/import-export.module';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { PurgeModule } from './purge/purge.module';
       autoSchemaFile: 'schema.gql',
     }),
     PurgeModule,
+    ImportExportModule,
   ],
   controllers: [AppController],
   providers: [AppService],
