@@ -19,7 +19,7 @@ export class MockController {
     const challengeSvc = new ChallengesService(userSvc);
 
     const users = chance
-      .n(() => User.getMockOne(true), +getDbDto.userCount)
+      .n(() => User.getMockOne(), +getDbDto.userCount)
       .map(u => userSvc.create(u));
     const userIds = users.map(u => u.id);
 
@@ -28,8 +28,6 @@ export class MockController {
         const randomUserId =
           userIds[chance.integer({ min: 0, max: userIds.length - 1 })];
         c.author = randomUserId;
-        c.bets = [];
-        userSvc.addRelatedUuid(randomUserId, 'challenges', c.id);
         return c;
       })
       .map(c => challengeSvc.create(c));
@@ -38,14 +36,11 @@ export class MockController {
     const bets = Bet.getMockMany(+getDbDto.betCount).map(b => {
       const randomUserId =
         userIds[chance.integer({ min: 0, max: userIds.length - 1 })];
+      b.author = randomUserId;
+
       const randomChallengeId =
         challengeIds[chance.integer({ min: 0, max: challengeIds.length - 1 })];
-
-      b.author = randomUserId;
-      userSvc.addRelatedUuid(randomUserId, 'bets', b.id);
-
       b.challenge = randomChallengeId;
-      challengeSvc.addRelatedUuid(randomChallengeId, 'bets', b.id);
 
       return b;
     });
@@ -67,21 +62,12 @@ export class MockController {
     return User.getMockMany(chance.integer({ min: 3, max: 150 }));
   }
 
-  @Get('new-user')
+  @Get('user')
   @ApiResponse({
     status: 200,
     type: User,
   })
   getMockNewUser() {
-    return User.getMockOne(true);
-  }
-
-  @Get('existing-user')
-  @ApiResponse({
-    status: 200,
-    type: User,
-  })
-  getExistingUsers() {
     return User.getMockOne();
   }
 

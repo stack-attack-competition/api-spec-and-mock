@@ -1,4 +1,4 @@
-import { IsArray, IsBoolean, IsString } from 'class-validator';
+import { IsBoolean, IsString } from 'class-validator';
 import { Exclude } from 'class-transformer';
 import * as Chance from 'chance';
 import * as _ from 'lodash';
@@ -59,35 +59,17 @@ export class User {
   @Field()
   pictureUrl: string;
 
-  @ApiProperty({
-    isArray: true,
-    example: chance.n(chance.guid, chance.integer({ min: 0, max: 20 })),
-  })
-  @IsArray()
-  @IsString({ each: true })
-  bets: string[];
-
-  @ApiProperty({
-    isArray: true,
-    example: chance.n(chance.guid, chance.integer({ min: 0, max: 10 })),
-  })
-  @IsArray()
-  @IsString({ each: true })
-  challenges: string[];
-
   constructor(user: Partial<User>) {
     Object.assign(this, _.pickBy(user, _.identity));
     if (!user.id) this.id = chance.guid();
-    if (!user.bets) this.bets = [];
-    if (!user.challenges) this.challenges = [];
   }
 
   static factory(data: Partial<User>): User {
     return new User(data);
   }
 
-  static getMockOne(isNew: boolean = chance.bool()): User {
-    const newUser = {
+  static getMockOne(): User {
+    return {
       id: chance.guid(),
       isDeleted: false,
       email: chance.email(),
@@ -95,20 +77,7 @@ export class User {
       firstName: chance.first(),
       lastName: chance.last(),
       pictureUrl: chance.avatar({ protocol: 'http' }),
-      bets: [],
-      challenges: [],
     };
-
-    return isNew
-      ? newUser
-      : {
-          ...newUser,
-          bets: chance.n(chance.guid, chance.integer({ min: 0, max: 50 })),
-          challenges: chance.n(
-            chance.guid,
-            chance.integer({ min: 0, max: 30 }),
-          ),
-        };
   }
 
   static getMockMany(n: number): User[] {

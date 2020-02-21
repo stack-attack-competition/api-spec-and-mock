@@ -16,8 +16,6 @@ import { Challenge } from './challenge';
 import { CreateChallengeDto } from './dto/create-challenge.dto';
 import { UpdateChallengeDto } from './dto/update-challenge.dto';
 import { BetsService } from '../bets/bets.service';
-import { UsersService } from '../users/users.service';
-import { User } from '../users/user';
 import { Bet } from '../bets/bet';
 
 @ApiTags('challenges')
@@ -26,7 +24,6 @@ export class ChallengesController {
   constructor(
     private challengeSvc: ChallengesService,
     private betSvc: BetsService,
-    private userSvc: UsersService,
   ) {}
 
   @Get('')
@@ -65,7 +62,7 @@ export class ChallengesController {
   @ApiResponse({
     status: 200,
     type: Bet,
-    isArray: true
+    isArray: true,
   })
   @ApiResponse({
     status: 404,
@@ -112,6 +109,7 @@ export class ChallengesController {
   }
 
   @Delete(':uuid')
+  @ApiOperation({ summary: 'soft delete' })
   @ApiResponse({
     status: 200,
     type: Challenge,

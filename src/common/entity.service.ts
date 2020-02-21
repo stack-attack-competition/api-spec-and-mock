@@ -63,33 +63,6 @@ export class EntityService<E extends { id: string; isDeleted: boolean }, C, U> {
     return relatedUuid;
   }
 
-  removeRelatedUuid(entityUuid: string, key: keyof E, relatedUuid: string) {
-    const existingEntity = this.findById(entityUuid);
-    if (!existingEntity)
-      throw new NotFoundException(
-        `The specified data with uuid: ${entityUuid} does not exist in the ${this.name}`,
-      );
-
-    if (!existingEntity[key])
-      throw new BadRequestException(
-        `The specified ${key} with uuid: ${entityUuid} does not exist in the ${this.name}`,
-      );
-
-    const entityProp = existingEntity[key];
-    if (!Array.isArray(entityProp)) {
-      throw new BadRequestException(
-        `The specified ${key} with uuid: ${entityUuid} is not a relation type (array) on ${this.name}`,
-      );
-    }
-
-    if (entityProp.some(u => u === relatedUuid)) {
-      // @ts-ignore
-      existingEntity[key] = entityProp.filter(u => u !== relatedUuid);
-    }
-
-    return relatedUuid;
-  }
-
   create(data: C): E {
     const newRecord = this.entity.factory(data);
     this.dataStore.push(newRecord);

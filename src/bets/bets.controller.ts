@@ -85,6 +85,7 @@ export class BetsController {
   }
 
   @Delete(':uuid')
+  @ApiOperation({summary: 'soft delete'})
   @ApiResponse({
     status: 200,
     type: Bet,

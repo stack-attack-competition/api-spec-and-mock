@@ -65,18 +65,9 @@ export class Challenge {
   @IsOptional()
   proofUrl?: string;
 
-  @ApiProperty({
-    isArray: true,
-    example: chance.n(chance.guid, chance.integer({ min: 0, max: 20 })),
-  })
-  @IsArray()
-  @IsString({ each: true })
-  bets: string[];
-
   constructor(challenge: Partial<Challenge>) {
     Object.assign(this, _.pickBy(challenge, _.identity));
     if (!challenge.id) this.id = chance.guid();
-    if (!challenge.bets) this.bets = [];
   }
 
   static factory(data: Partial<Challenge>): Challenge {
@@ -98,7 +89,6 @@ export class Challenge {
       description: chance.paragraph(),
       isActive: true,
       endDate: chance.date().toISOString(),
-      bets: chance.n(chance.guid, chance.integer({ min: 0, max: 20 })),
     };
 
     return isActive

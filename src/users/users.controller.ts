@@ -26,7 +26,7 @@ export class UsersController {
   constructor(
     private usersSvc: UsersService,
     private challengeSvc: ChallengesService,
-    private betSvc: BetsService
+    private betSvc: BetsService,
   ) {}
 
   @Get('')
@@ -60,6 +60,7 @@ export class UsersController {
   }
 
   @Get(':uuid/challenges')
+  @ApiOperation({ summary: 'get challenges for a user' })
   @ApiQuery({ name: 'showDeleted', required: false })
   @ApiResponse({
     status: 200,
@@ -80,6 +81,7 @@ export class UsersController {
   }
 
   @Get(':uuid/bets')
+  @ApiOperation({ summary: 'get bets for a user' })
   @ApiQuery({ name: 'showDeleted', required: false })
   @ApiResponse({
     status: 200,
@@ -145,6 +147,7 @@ export class UsersController {
   }
 
   @Delete(':uuid')
+  @ApiOperation({ summary: 'soft delete' })
   @ApiResponse({
     status: 200,
     type: User,
