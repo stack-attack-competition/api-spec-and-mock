@@ -15,11 +15,19 @@ import { ApiOperation, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { User } from './user';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { Challenge } from '../challenges/challenge';
+import { ChallengesService } from '../challenges/challenges.service';
+import { BetsService } from '../bets/bets.service';
+import { Bet } from '../bets/bet';
 
 @ApiTags('users')
 @Controller('users')
 export class UsersController {
-  constructor(private usersSvc: UsersService) {}
+  constructor(
+    private usersSvc: UsersService,
+    private challengeSvc: ChallengesService,
+    private betSvc: BetsService
+  ) {}
 
   @Get('')
   @ApiQuery({ name: 'showDeleted', required: false })
@@ -49,6 +57,46 @@ export class UsersController {
     const user = this.usersSvc.findById(userId, showDeleted);
     if (!user) throw new NotFoundException('User does not exist!');
     return user;
+  }
+
+  @Get(':uuid/challenges')
+  @ApiQuery({ name: 'showDeleted', required: false })
+  @ApiResponse({
+    status: 200,
+    type: Challenge,
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'User does not exist!',
+  })
+  getChallengesForUser(
+    @Param('uuid', new ParseUUIDPipe()) userId: string,
+    @Query('showDeleted') showDeleted: boolean = false,
+  ) {
+    const user = this.usersSvc.findById(userId, showDeleted);
+    if (!user) throw new NotFoundException('User does not exist!');
+
+    return this.challengeSvc.filterBy('author', userId);
+  }
+
+  @Get(':uuid/bets')
+  @ApiQuery({ name: 'showDeleted', required: false })
+  @ApiResponse({
+    status: 200,
+    type: Bet,
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'User does not exist!',
+  })
+  getBetsForUser(
+    @Param('uuid', new ParseUUIDPipe()) userId: string,
+    @Query('showDeleted') showDeleted: boolean = false,
+  ) {
+    const user = this.usersSvc.findById(userId, showDeleted);
+    if (!user) throw new NotFoundException('User does not exist!');
+
+    return this.betSvc.filterBy('author', userId, showDeleted);
   }
 
   @Post()

@@ -15,11 +15,19 @@ import { ChallengesService } from './challenges.service';
 import { Challenge } from './challenge';
 import { CreateChallengeDto } from './dto/create-challenge.dto';
 import { UpdateChallengeDto } from './dto/update-challenge.dto';
+import { BetsService } from '../bets/bets.service';
+import { UsersService } from '../users/users.service';
+import { User } from '../users/user';
+import { Bet } from '../bets/bet';
 
 @ApiTags('challenges')
 @Controller('challenges')
 export class ChallengesController {
-  constructor(private challengeSvc: ChallengesService) {}
+  constructor(
+    private challengeSvc: ChallengesService,
+    private betSvc: BetsService,
+    private userSvc: UsersService,
+  ) {}
 
   @Get('')
   @ApiQuery({ name: 'showDeleted', required: false })
@@ -49,6 +57,25 @@ export class ChallengesController {
     const challenge = this.challengeSvc.findById(challengeId, showDeleted);
     if (!challenge) throw new NotFoundException('Challange does not exist!');
     return challenge;
+  }
+
+  @Get(':uuid/bets')
+  @ApiOperation({ summary: 'get bets for a challenge' })
+  @ApiQuery({ name: 'showDeleted', required: false })
+  @ApiResponse({
+    status: 200,
+    type: Bet,
+    isArray: true
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'Challange does not exist!',
+  })
+  getBersForChallenge(
+    @Param('uuid', new ParseUUIDPipe()) challengeId: string,
+    @Query('showDeleted') showDeleted: boolean = false,
+  ) {
+    return this.betSvc.filterBy('challenge', challengeId, showDeleted);
   }
 
   @Post()
