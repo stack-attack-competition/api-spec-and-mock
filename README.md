@@ -6,7 +6,9 @@
 
 This is an api specification, example implementation and mock data source for the Stack Attack #1 event.
 
-This spec also can be found on https://app.swaggerhub.com/apis/stack-attack-no1/stack-attack_rest_api/1.0.0
+This spec also can be found on 
+* https://app.swaggerhub.com/apis/stack-attack-no1/stack-attack_rest_api/1.0.0 - just spec
+* https://stack-attack-bed.herokuapp.com/api/ - spec and test
 
 ## Installation
 
