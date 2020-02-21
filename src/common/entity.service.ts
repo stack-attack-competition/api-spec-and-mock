@@ -7,29 +7,35 @@ import {
 } from '@nestjs/common';
 
 @Injectable()
-export class EntityService<E extends { id: string }, C, U> {
+export class EntityService<E extends { id: string; isDeleted: boolean }, C, U> {
   private dataStore: E[] = [];
 
   constructor(private name: string, private entity: any) {}
 
-  findAll(): E[] {
-    return this.dataStore;
+  findAll(showDeleted = false): E[] {
+    return this.dataStore.filter(d => (showDeleted ? true : d.isDeleted));
   }
 
-  findBy(key: string, value: any): E | undefined {
-    return this.dataStore.find(d => d[key] === value);
+  findBy(key: string, value: any, showDeleted = false): E | undefined {
+    return this.dataStore
+      .filter(d => (showDeleted ? true : d.isDeleted))
+      .find(d => d[key] === value);
   }
 
-  filterBy(key: string, value: any): E[] {
-    return this.dataStore.filter(d => d[key] === value);
+  filterBy(key: string, value: any, showDeleted = false): E[] {
+    return this.dataStore
+      .filter(d => (showDeleted ? true : d.isDeleted))
+      .filter(d => d[key] === value);
   }
 
-  findById(uuid: string): E | undefined {
-    return this.findBy('id', uuid);
+  findById(uuid: string, showDeleted = false): E | undefined {
+    return this.findBy('id', uuid, showDeleted);
   }
 
-  findIndexById(uuid: string): number | undefined {
-    const index = this.dataStore.findIndex(d => d.id === uuid);
+  findIndexById(uuid: string, showDeleted = false): number | undefined {
+    const index = this.dataStore
+      .filter(d => (showDeleted ? true : d.isDeleted))
+      .findIndex(d => d.id === uuid);
     return index === -1 ? undefined : index;
   }
 
@@ -110,9 +116,9 @@ export class EntityService<E extends { id: string }, C, U> {
     if (!existintRecordIndex)
       throw new NotFoundException('Existing record is not found!');
 
-    const deletedRecord = this.dataStore.splice(existintRecordIndex);
+    this.dataStore[existintRecordIndex].isDeleted = true;
 
-    return deletedRecord[0];
+    return this.dataStore[existintRecordIndex];
   }
 
   removeAll() {

@@ -1,5 +1,16 @@
-import { Body, Controller, Delete, Get, NotFoundException, Param, ParseUUIDPipe, Patch, Post } from '@nestjs/common';
-import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  NotFoundException,
+  Param,
+  ParseUUIDPipe,
+  Patch,
+  Post,
+  Query,
+} from '@nestjs/common';
+import { ApiOperation, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { BetsService } from './bets.service';
 import { Bet } from './bet';
 import { CreateBetDto } from './dto/create-bet.dto';
@@ -11,16 +22,18 @@ export class BetsController {
   constructor(private betSvc: BetsService) {}
 
   @Get('')
+  @ApiQuery({ name: 'showDeleted', required: false })
   @ApiResponse({
     status: 200,
     type: Bet,
     isArray: true,
   })
-  getAll() {
-    return this.betSvc.findAll();
+  getAll(@Query('showDeleted') showDeleted: boolean = false) {
+    return this.betSvc.findAll(showDeleted);
   }
 
   @Get(':uuid')
+  @ApiQuery({ name: 'showDeleted', required: false })
   @ApiResponse({
     status: 200,
     type: Bet,
@@ -29,8 +42,11 @@ export class BetsController {
     status: 404,
     description: 'Bet does not exist!',
   })
-  getById(@Param('uuid', new ParseUUIDPipe()) BetId: string) {
-    const bet = this.betSvc.findById(BetId);
+  getById(
+    @Param('uuid', new ParseUUIDPipe()) betId: string,
+    @Query('showDeleted') showDeleted: boolean = false,
+  ) {
+    const bet = this.betSvc.findById(betId, showDeleted);
     if (!bet) throw new NotFoundException('Bet does not exist!');
     return bet;
   }

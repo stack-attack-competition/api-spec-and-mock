@@ -13,6 +13,12 @@ export class Bet {
   id: string;
 
   @ApiProperty({
+    example: chance.bool(),
+  })
+  @IsBoolean()
+  isDeleted = false;
+
+  @ApiProperty({
     example: chance.guid(),
   })
   @IsString()
@@ -60,6 +66,7 @@ export class Bet {
   ): Bet {
     const activeBetMock = {
       id: chance.guid(),
+      isDeleted: false,
       author,
       challenge,
       inFavor,

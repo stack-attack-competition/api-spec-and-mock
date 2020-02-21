@@ -13,6 +13,12 @@ export class Challenge {
   id: string;
 
   @ApiProperty({
+    example: chance.bool(),
+  })
+  @IsBoolean()
+  isDeleted = false;
+
+  @ApiProperty({
     example: chance.guid(),
   })
   @IsString()
@@ -83,6 +89,7 @@ export class Challenge {
   ): Challenge {
     const activeChallangeMock = {
       id: chance.guid(),
+      isDeleted: false,
       author,
       title: chance.sentence({
         punctuation: false,

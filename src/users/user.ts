@@ -1,4 +1,4 @@
-import { IsArray, IsString } from 'class-validator';
+import { IsArray, IsBoolean, IsString } from 'class-validator';
 import { Exclude } from 'class-transformer';
 import * as Chance from 'chance';
 import * as _ from 'lodash';
@@ -15,6 +15,12 @@ export class User {
   @IsString()
   @Field()
   id: string;
+
+  @ApiProperty({
+    example: chance.bool(),
+  })
+  @IsBoolean()
+  isDeleted = false;
 
   @ApiProperty({
     example: chance.email(),
@@ -83,6 +89,7 @@ export class User {
   static getMockOne(isNew: boolean = chance.bool()): User {
     const newUser = {
       id: chance.guid(),
+      isDeleted: false,
       email: chance.email(),
       password: chance.string(),
       firstName: chance.first(),

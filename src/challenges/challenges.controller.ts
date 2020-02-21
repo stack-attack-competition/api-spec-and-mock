@@ -8,8 +8,9 @@ import {
   ParseUUIDPipe,
   Patch,
   Post,
+  Query,
 } from '@nestjs/common';
-import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiOperation, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { ChallengesService } from './challenges.service';
 import { Challenge } from './challenge';
 import { CreateChallengeDto } from './dto/create-challenge.dto';
@@ -21,16 +22,18 @@ export class ChallengesController {
   constructor(private challengeSvc: ChallengesService) {}
 
   @Get('')
+  @ApiQuery({ name: 'showDeleted', required: false })
   @ApiResponse({
     status: 200,
     type: Challenge,
     isArray: true,
   })
-  getAll() {
-    return this.challengeSvc.findAll();
+  getAll(@Query('showDeleted') showDeleted: boolean = false) {
+    return this.challengeSvc.findAll(showDeleted);
   }
 
   @Get(':uuid')
+  @ApiQuery({ name: 'showDeleted', required: false })
   @ApiResponse({
     status: 200,
     type: Challenge,
@@ -39,8 +42,11 @@ export class ChallengesController {
     status: 404,
     description: 'Challange does not exist!',
   })
-  getById(@Param('uuid', new ParseUUIDPipe()) challengeId: string) {
-    const challenge = this.challengeSvc.findById(challengeId);
+  getById(
+    @Param('uuid', new ParseUUIDPipe()) challengeId: string,
+    @Query('showDeleted') showDeleted: boolean = false,
+  ) {
+    const challenge = this.challengeSvc.findById(challengeId, showDeleted);
     if (!challenge) throw new NotFoundException('Challange does not exist!');
     return challenge;
   }

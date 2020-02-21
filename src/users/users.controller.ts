@@ -8,9 +8,10 @@ import {
   ParseUUIDPipe,
   Patch,
   Post,
+  Query,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
-import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiOperation, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { User } from './user';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -21,16 +22,18 @@ export class UsersController {
   constructor(private usersSvc: UsersService) {}
 
   @Get('')
+  @ApiQuery({ name: 'showDeleted', required: false })
   @ApiResponse({
     status: 200,
     type: User,
     isArray: true,
   })
-  getAll() {
-    return this.usersSvc.findAll();
+  getAll(@Query('showDeleted') showDeleted: boolean = false) {
+    return this.usersSvc.findAll(showDeleted);
   }
 
   @Get(':uuid')
+  @ApiQuery({ name: 'showDeleted', required: false })
   @ApiResponse({
     status: 200,
     type: User,
@@ -39,8 +42,11 @@ export class UsersController {
     status: 404,
     description: 'User does not exist!',
   })
-  getById(@Param('uuid', new ParseUUIDPipe()) userId: string) {
-    const user = this.usersSvc.findById(userId);
+  getById(
+    @Param('uuid', new ParseUUIDPipe()) userId: string,
+    @Query('showDeleted') showDeleted: boolean = false,
+  ) {
+    const user = this.usersSvc.findById(userId, showDeleted);
     if (!user) throw new NotFoundException('User does not exist!');
     return user;
   }
