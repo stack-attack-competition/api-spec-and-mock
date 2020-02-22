@@ -22,6 +22,8 @@ $ npm install
 $ npm run start:dev
 ```
 
+rename .env.sample to .env and you are good to go and can define your own port and other environment variables in that file
+
 the api swagger spec will be on the http://localhost:3000/api
 
 in json format the spec can be found on: http://localhost:3000/api-json
