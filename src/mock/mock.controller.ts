@@ -62,6 +62,16 @@ export class MockController {
     return User.getMockMany(chance.integer({ min: 3, max: 150 }));
   }
 
+  @Get('users/:uuid')
+  @ApiResponse({
+    status: 200,
+    type: User,
+    isArray: true,
+  })
+  getMockUser() {
+    return User.getMockOne();
+  }
+
   @Get('user')
   @ApiResponse({
     status: 200,
@@ -79,6 +89,16 @@ export class MockController {
   })
   getMockChallenges() {
     return Challenge.getMockMany(chance.integer({ min: 3, max: 150 }));
+  }
+
+  @Get('challenges/:uuid')
+  @ApiResponse({
+    status: 200,
+    type: Challenge,
+    isArray: true,
+  })
+  getMockChallenge() {
+    return Challenge.getMockOne();
   }
 
   @Get('active-challenge')
