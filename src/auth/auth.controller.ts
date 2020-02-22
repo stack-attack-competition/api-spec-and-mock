@@ -34,6 +34,6 @@ export class AuthController {
     description: 'Email address is taken!',
   })
   register(@Body() user: CreateUserDto) {
-    return this.usersSvc.update(user);
+    return this.usersSvc.create(user);
   }
 }

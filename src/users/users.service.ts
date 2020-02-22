@@ -25,4 +25,15 @@ export class UsersService extends EntityService<User,
 
     return super.update(data, uuid);
   }
+
+  create(data: CreateUserDto) {
+    const emailCheck = this.filterBy('email', data.email);
+
+    if (emailCheck.length > 0)
+      throw new ConflictException(
+        'This email address is already being used. Email addresses must be unique!',
+      );
+
+    return super.create(data);
+  }
 }
