@@ -18,6 +18,7 @@ export class User {
 
   @ApiProperty({
     example: chance.bool(),
+    type: 'boolean'
   })
   @IsBoolean()
   isDeleted = false;

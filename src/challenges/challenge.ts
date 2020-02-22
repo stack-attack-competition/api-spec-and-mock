@@ -14,6 +14,7 @@ export class Challenge {
 
   @ApiProperty({
     example: chance.bool(),
+    type: 'boolean'
   })
   @IsBoolean()
   isDeleted = false;
