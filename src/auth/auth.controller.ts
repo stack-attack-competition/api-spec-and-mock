@@ -11,6 +11,10 @@ export class AuthController {
   constructor(private usersSvc: UsersService) {}
 
   @Post('login')
+  @ApiResponse({
+    status: 200,
+    type: User,
+  })
   login(@Body() loginDto: LoginDto) {
     const user = this.usersSvc.findBy('email', loginDto.email);
 
