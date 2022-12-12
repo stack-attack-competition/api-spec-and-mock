@@ -28,7 +28,7 @@
     "@nestjs/config": "^0.2.3",
     "@nestjs/core": "^6.10.14",
     "@nestjs/graphql": "^6.5.4",
-    "@nestjs/platform-express": "^6.10.14",
+    "@nestjs/platform-express": "^9.2.1",
     "@nestjs/swagger": "^4.2.7",
     "@types/chance": "^1.0.8",
     "apollo-server-express": "^2.10.1",
